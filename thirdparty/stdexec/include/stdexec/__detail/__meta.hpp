@@ -133,14 +133,14 @@ namespace stdexec {
     using __mbind_back = __mbind_back_q<_Fn::template __f, _Back...>;
 
   template <template <class...> class _T, class... _Args>
-    concept __valid =
+    concept __validd =
       requires {
         typename __meval<_T, _Args...>;
       };
 
   template <class _Fn, class... _Args>
     concept __minvocable =
-      __valid<_Fn::template __f, _Args...>;
+      __validd<_Fn::template __f, _Args...>;
 
   template <bool>
     struct __if_ {
@@ -388,7 +388,7 @@ namespace stdexec {
     using __front = __meval<__front_, _As...>;
   template <class... _As>
       requires (sizeof...(_As) == 1)
-    using __single = __front<_As...>;
+    using __singles = __front<_As...>;
   template <class _Ty>
     using __single_or = __mbind_back_q<__front_, _Ty>;
 
@@ -572,10 +572,10 @@ namespace stdexec {
 
   template <class _Ty>
     using __mrequires =
-      __bool<__valid<__mtypeof, _Ty>>;
+      __bool<__validd<__mtypeof, _Ty>>;
   template <class _Ty>
     concept __mrequires_v =
-      __valid<__mtypeof, _Ty>;
+      __validd<__mtypeof, _Ty>;
 
   template <class _Ty>
     inline constexpr bool __mnoexcept__ = true;

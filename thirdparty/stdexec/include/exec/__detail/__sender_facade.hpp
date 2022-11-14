@@ -153,7 +153,7 @@ namespace exec {
           template <__one_of<set_value_t, set_error_t, set_stopped_t> _Tag,
                     same_as<__t> _Self,
                     class... _As _NVCXX_CAPTURE_PACK(_As)>
-              requires __valid<__set_result_t, _Kernel, _Receiver, _Tag, _As...>
+              requires __validd<__set_result_t, _Kernel, _Receiver, _Tag, _As...>
             friend void tag_invoke(_Tag __tag, _Self __self, _As&&... __as) noexcept {
               _NVCXX_EXPAND_PACK(_As, __as,
                 __state& __st = *__self.__state_;

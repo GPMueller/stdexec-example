@@ -308,7 +308,7 @@ namespace exec {
 
         // Make this task generally awaitable:
         friend __task_awaitable<> operator co_await(basic_task&& __self) noexcept
-            requires stdexec::__valid<awaiter_context_t, __promise> {
+            requires stdexec::__validd<awaiter_context_t, __promise> {
           return __task_awaitable<>{std::exchange(__self.__coro_, {})};
         }
 

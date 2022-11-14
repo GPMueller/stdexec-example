@@ -620,32 +620,32 @@ namespace stdexec {
       __gather_sigs_t<_Tag, _Sender, _Env, __mconst<int>, __mcount>;
 
   template <class _Tag, class _Sender, class _Env = no_env>
-      requires __valid<__count_of, _Tag, _Sender, _Env>
+      requires __validd<__count_of, _Tag, _Sender, _Env>
     inline constexpr bool __sends =
       (__v<__count_of<_Tag, _Sender, _Env>> != 0);
 
   template <class _Sender, class _Env = no_env>
-      requires __valid<__count_of, set_stopped_t, _Sender, _Env>
+      requires __validd<__count_of, set_stopped_t, _Sender, _Env>
     inline constexpr bool sends_stopped =
       __sends<set_stopped_t, _Sender, _Env>;
 
   template <class _Sender, class _Env = no_env>
     using __single_sender_value_t =
-      __value_types_of_t<_Sender, _Env, __single_or<void>, __q<__single>>;
+      __value_types_of_t<_Sender, _Env, __single_or<void>, __q<__singles>>;
 
   template <class _Sender, class _Env = no_env>
     using __single_value_variant_sender_t =
-      value_types_of_t<_Sender, _Env, __types, __single>;
+      value_types_of_t<_Sender, _Env, __types, __singles>;
 
   template <class _Sender, class _Env = no_env>
     concept __single_typed_sender =
       sender<_Sender, _Env> &&
-      __valid<__single_sender_value_t, _Sender, _Env>;
+      __validd<__single_sender_value_t, _Sender, _Env>;
 
   template <class _Sender, class _Env = no_env>
     concept __single_value_variant_sender =
       sender<_Sender, _Env> &&
-      __valid<__single_value_variant_sender_t, _Sender, _Env>;
+      __validd<__single_value_variant_sender_t, _Sender, _Env>;
 
   template <class... Errs>
     using __nofail = __bool<sizeof...(Errs) == 0>;
@@ -5075,7 +5075,7 @@ namespace stdexec {
             _Sender,
             __env,
             stdexec::__decayed_tuple,
-            __single>;
+            __singles>;
 
       template <class _Sender>
         using __sync_wait_with_variant_result_t =
