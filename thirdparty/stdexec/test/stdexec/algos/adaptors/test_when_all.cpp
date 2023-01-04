@@ -68,6 +68,13 @@ TEST_CASE("when_all with just one sender", "[adaptors][when_all]") {
   wait_for_value(std::move(snd), 2);
 }
 
+TEST_CASE("when_all with move-only types", "[adaptors][when_all]") {
+  ex::sender auto snd = ex::when_all( //
+      ex::just(movable(2))            //
+  );
+  wait_for_value(std::move(snd), movable(2));
+}
+
 TEST_CASE("when_all with no senders", "[adaptors][when_all]") {
   ex::sender auto snd = ex::when_all();
   wait_for_value(std::move(snd));
@@ -257,14 +264,14 @@ TEST_CASE("when_all has the values_type based on the children, decayed and as rv
 }
 
 TEST_CASE("when_all has the error_types based on the children", "[adaptors][when_all]") {
-  check_err_types<type_array<std::exception_ptr, int>>(ex::when_all(ex::just_error(13)));
-  check_err_types<type_array<std::exception_ptr, double>>(ex::when_all(ex::just_error(3.14)));
+  check_err_types<type_array<std::exception_ptr&&, int&&>>(ex::when_all(ex::just_error(13)));
+  check_err_types<type_array<std::exception_ptr&&, double&&>>(ex::when_all(ex::just_error(3.14)));
 
-  check_err_types<type_array<std::exception_ptr>>(ex::when_all(ex::just()));
+  check_err_types<type_array<std::exception_ptr&&>>(ex::when_all(ex::just()));
 
-  check_err_types<type_array<std::exception_ptr, int, double>>(
+  check_err_types<type_array<std::exception_ptr&&, int&&, double&&>>(
       ex::when_all(ex::just_error(3), ex::just_error(0.14)));
-  check_err_types<type_array<std::exception_ptr, int, double, std::string>>( //
+  check_err_types<type_array<std::exception_ptr&&, int&&, double&&, std::string&&>>( //
       ex::when_all(                                                          //
           ex::just_error(3),                                                 //
           ex::just_error(0.14),                                              //
@@ -272,7 +279,7 @@ TEST_CASE("when_all has the error_types based on the children", "[adaptors][when
           )                                                                  //
   );
 
-  check_err_types<type_array<std::exception_ptr>>( //
+  check_err_types<type_array<std::exception_ptr&&>>( //
       ex::when_all(                                //
           ex::just(13),                            //
           ex::just_error(std::exception_ptr{}),    //

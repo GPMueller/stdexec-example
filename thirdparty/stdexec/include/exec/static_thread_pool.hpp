@@ -49,6 +49,8 @@ namespace exec {
     ~static_thread_pool();
 
     struct scheduler {
+      using __t = scheduler;
+      using __id = scheduler;
       bool operator==(const scheduler&) const = default;
 
      private:
@@ -57,6 +59,8 @@ namespace exec {
 
       class sender {
        public:
+        using __t = sender;
+        using __id = sender;
         using completion_signatures =
           stdexec::completion_signatures<
             stdexec::set_value_t(),
@@ -333,15 +337,15 @@ namespace exec {
           template <class Self, class Env>
             using completion_signatures =
               stdexec::__make_completion_signatures<
-                stdexec::__member_t<Self, Sender>,
+                stdexec::__copy_cvref_t<Self, Sender>,
                 Env,
-                with_error_invoke_t<Fun, stdexec::__member_t<Self, Sender>, Env>,
+                with_error_invoke_t<Fun, stdexec::__copy_cvref_t<Self, Sender>, Env>,
                 stdexec::__q<set_value_t>>;
 
           template <class Self, class Receiver>
             using bulk_op_state_t =
               bulk_op_state<
-                stdexec::__x<stdexec::__member_t<Self, Sender>>,
+                stdexec::__x<stdexec::__copy_cvref_t<Self, Sender>>,
                 stdexec::__x<std::remove_cvref_t<Receiver>>, Shape, Fun>;
 
           template <stdexec::__decays_to<bulk_sender> Self, stdexec::receiver Receiver>
@@ -444,9 +448,10 @@ namespace exec {
         this->__execute = [](task_base* t, std::uint32_t /* tid */) noexcept {
           auto& op = *static_cast<operation*>(t);
           auto stoken =
-            stdexec::get_stop_token(
-              stdexec::get_env(op.receiver_));
-          if (stoken.stop_requested()) {
+            stdexec::get_stop_token(stdexec::get_env(op.receiver_));
+          if constexpr (std::unstoppable_token<decltype(stoken)>) {
+            stdexec::set_value((Receiver &&) op.receiver_);
+          } else if (stoken.stop_requested()) {
             stdexec::set_stopped((Receiver &&) op.receiver_);
           } else {
             stdexec::set_value((Receiver &&) op.receiver_);

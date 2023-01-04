@@ -61,14 +61,15 @@ This library is header-only, so all the source code can be found in the `include
 | Vendor-specific extensions and customizations | <code>&lt;<i>(vendor)</i>exec/...&gt;</code> | <code>::<i>(vendor)</i>exec</code> |
 | | |
 
-
-
 ## Building
 
 The following tools are needed:
 
 * [`CMake`](https://cmake.org/)
-* GCC 11+ or clang 12+
+* One of the following supported C++ compilers:
+  * GCC 11+
+  * clang 12+
+  * nvc++ 22.11
 
 Perform the following actions:
 
